@@ -453,3 +453,78 @@ html[data-theme="light"] .site-footer{ background: rgba(246,248,255,.65); }
   .form-row{ grid-template-columns: 1fr; }
   .fab-whatsapp{ right: 14px; bottom: 14px; }
 }
+
+
+/* Social icons */
+.social img{
+  width:18px; height:18px;
+  border-radius: 6px;
+  vertical-align: -3px;
+  margin-right: 8px;
+  box-shadow: 0 8px 20px rgba(0,0,0,.18);
+}
+/* WhatsApp FAB icon */
+.fab-icon{
+  width:22px; height:22px;
+  border-radius: 7px;
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(0,0,0,.12);
+}
+
+/* 3D Carousel */
+.carousel3d{
+  position: relative;
+  width: 100%;
+  height: 360px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  background: rgba(255,255,255,.02);
+  box-shadow: var(--shadow);
+  perspective: 1100px;
+}
+@media (max-width: 920px){
+  .carousel3d{ height: 290px; }
+}
+.carousel3d-track{
+  position:absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: transform 0.9s cubic-bezier(.2,.8,.2,1);
+}
+.carousel3d-track img{
+  position:absolute;
+  left:50%; top:50%;
+  width: 62%;
+  max-width: 520px;
+  height:auto;
+  transform-style: preserve-3d;
+  border-radius: 16px;
+  border: 1px solid rgba(234,240,255,.12);
+  box-shadow: 0 18px 44px rgba(0,0,0,.35);
+  transform-origin: center center;
+}
+@media (max-width: 920px){
+  .carousel3d-track img{ width: 78%; max-width: 520px; }
+}
+.carousel3d::after{
+  content:"";
+  position:absolute; inset:0;
+  background: radial-gradient(800px 300px at 50% 10%, rgba(42,168,255,.18), transparent 60%),
+              radial-gradient(900px 400px at 20% 90%, rgba(30,91,255,.14), transparent 60%);
+  pointer-events:none;
+}
+.carousel3d-controls{
+  position:absolute;
+  right: 10px;
+  bottom: 10px;
+  display:flex;
+  gap:8px;
+  z-index: 2;
+}
+.carousel-btn{
+  width:40px; height:40px;
+  font-size: 22px;
+  font-weight: 900;
+}

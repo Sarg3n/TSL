@@ -163,4 +163,62 @@
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") closeLightbox();
   });
+
+  // 3D Carousel (auto-rotate + controls)
+  const carTrack = document.getElementById("carousel3d");
+  const carPrev = document.getElementById("car-prev");
+  const carNext = document.getElementById("car-next");
+  if (carTrack) {
+    const imgs = Array.from(carTrack.querySelectorAll("img"));
+    const n = imgs.length;
+    const radius = 520; // px
+    let index = 0;
+    let paused = false;
+
+    function layout() {
+      const step = 360 / n;
+      imgs.forEach((img, i) => {
+        const ang = step * i;
+        img.style.transform = `translate(-50%, -50%) rotateY(${ang}deg) translateZ(${radius}px)`;
+      });
+      rotateTo(index);
+    }
+
+    function rotateTo(i) {
+      index = (i % n + n) % n;
+      const step = 360 / n;
+      carTrack.style.transform = `rotateY(${-index * step}deg)`;
+    }
+
+    const timer = setInterval(() => {
+      if (!paused) rotateTo(index + 1);
+    }, 2600);
+
+    carTrack.addEventListener("mouseenter", () => (paused = true));
+    carTrack.addEventListener("mouseleave", () => (paused = false));
+
+    carPrev?.addEventListener("click", () => rotateTo(index - 1));
+    carNext?.addEventListener("click", () => rotateTo(index + 1));
+
+    // touch swipe
+    let startX = null;
+    carTrack.addEventListener("touchstart", (e) => {
+      if (!e.touches || !e.touches[0]) return;
+      startX = e.touches[0].clientX;
+      paused = true;
+    }, { passive: true });
+
+    carTrack.addEventListener("touchend", (e) => {
+      if (startX === null) return;
+      const endX = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0].clientX : startX;
+      const dx = endX - startX;
+      if (Math.abs(dx) > 40) rotateTo(index + (dx < 0 ? 1 : -1));
+      startX = null;
+      paused = false;
+    });
+
+    layout();
+    window.addEventListener("resize", layout);
+  }
+
 })();

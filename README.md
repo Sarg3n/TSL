@@ -27,3 +27,8 @@ Opções típicas:
 - Formspree / Getform / Netlify Forms (serviços externos)
 
 Se quiseres, digo-te exatamente como ligar o formulário à tua Supabase Edge Function (sem expor credenciais no frontend).
+
+
+## v4
+- Carrossel 3D no topo (auto + botões + swipe)
+- Ícones PNG: WhatsApp / Facebook / Instagram / YouTube
