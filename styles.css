@@ -156,7 +156,7 @@ html[data-theme="light"] .icon-btn:hover{ background: rgba(255,255,255,.95); }
 .nav-toggle-lines::after{ top:6px; }
 
 /* HERO */
-.hero{ padding:64px 0 34px; }
+.hero{ padding:5px 0 34px; }
 .hero-grid{ display:grid; grid-template-columns: 1.05fr .95fr; gap:24px; align-items:start; }
 .eyebrow{
   color: rgba(234,240,255,.85);
