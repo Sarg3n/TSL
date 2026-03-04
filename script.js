@@ -164,61 +164,104 @@
     if (e.key === "Escape") closeLightbox();
   });
 
-  // 3D Carousel (auto-rotate + controls)
+  // 3D Carousel (premium depth + controls)
   const carTrack = document.getElementById("carousel3d");
   const carPrev = document.getElementById("car-prev");
   const carNext = document.getElementById("car-next");
+  
   if (carTrack) {
     const imgs = Array.from(carTrack.querySelectorAll("img"));
     const n = imgs.length;
-    const radius = 520; // px
+  
     let index = 0;
     let paused = false;
-
+  
+    function getRadius() {
+      // Responsive radius: smaller on mobile
+      const w = window.innerWidth || 1200;
+      if (w < 480) return 340;
+      if (w < 920) return 420;
+      return 560;
+    }
+  
+    function updateClasses() {
+      // Mark depth states: front, side, back
+      imgs.forEach((img, i) => {
+        img.classList.remove("is-front", "is-side", "is-back");
+  
+        const d = (i - index + n) % n; // distance forward
+        const d2 = Math.min(d, n - d); // circular distance
+  
+        if (d2 === 0) img.classList.add("is-front");
+        else if (d2 === 1) img.classList.add("is-side");
+        else img.classList.add("is-back");
+      });
+    }
+  
     function layout() {
+      const radius = getRadius();
       const step = 360 / n;
+  
       imgs.forEach((img, i) => {
         const ang = step * i;
-        img.style.transform = `translate(-50%, -50%) rotateY(${ang}deg) translateZ(${radius}px)`;
+        // Use translateZ for ring; a tiny Y tilt makes it feel more 3D
+        img.style.transform = `translate(-50%, -50%) rotateY(${ang}deg) translateZ(${radius}px) rotateX(2deg)`;
       });
-      rotateTo(index);
+  
+      rotateTo(index, false);
     }
-
-    function rotateTo(i) {
+  
+    function rotateTo(i, animate = true) {
       index = (i % n + n) % n;
       const step = 360 / n;
+      if (!animate) carTrack.style.transition = "none";
       carTrack.style.transform = `rotateY(${-index * step}deg)`;
+  
+      // restore transition next tick
+      if (!animate) requestAnimationFrame(() => (carTrack.style.transition = ""));
+      updateClasses();
     }
-
+  
+    // autoplay
     const timer = setInterval(() => {
       if (!paused) rotateTo(index + 1);
     }, 2600);
-
+  
+    // pause on hover
     carTrack.addEventListener("mouseenter", () => (paused = true));
     carTrack.addEventListener("mouseleave", () => (paused = false));
-
+  
+    // controls
     carPrev?.addEventListener("click", () => rotateTo(index - 1));
     carNext?.addEventListener("click", () => rotateTo(index + 1));
-
+  
     // touch swipe
     let startX = null;
-    carTrack.addEventListener("touchstart", (e) => {
-      if (!e.touches || !e.touches[0]) return;
-      startX = e.touches[0].clientX;
-      paused = true;
-    }, { passive: true });
-
+    carTrack.addEventListener(
+      "touchstart",
+      (e) => {
+        if (!e.touches || !e.touches[0]) return;
+        startX = e.touches[0].clientX;
+        paused = true;
+      },
+      { passive: true }
+    );
+  
     carTrack.addEventListener("touchend", (e) => {
       if (startX === null) return;
-      const endX = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0].clientX : startX;
+      const endX =
+        e.changedTouches && e.changedTouches[0]
+          ? e.changedTouches[0].clientX
+          : startX;
       const dx = endX - startX;
       if (Math.abs(dx) > 40) rotateTo(index + (dx < 0 ? 1 : -1));
       startX = null;
       paused = false;
     });
-
+  
+    // initial
     layout();
-    window.addEventListener("resize", layout);
+    window.addEventListener("resize", () => layout());
   }
 
 })();
